@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat Room</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.min.js"></script>
+    <style>
+        #chat {
+            height: 300px;
+            overflow-y: scroll;
+            border: 1px solid #ccc;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Chat Room</h1>
+    <div id="chat"></div>
+    <input id="messageInput" type="text" placeholder="Type a message...">
+    <button onclick="sendMessage()">Send</button>
+    <a href="/logout">Logout</a>
+
+    <script>
+        const socket = io();
+
+        // Listen for messages from the server
+        socket.on('message', function(msg) {
+            const chat = document.getElementById('chat');
+            const messageElement = document.createElement('p');
+            messageElement.textContent = msg;
+            chat.appendChild(messageElement);
+            chat.scrollTop = chat.scrollHeight; // Auto-scroll to the bottom
+        });
+
+        // Function to send a message to the server
+        function sendMessage() {
+            const input = document.getElementById('messageInput');
+            const message = input.value;
+            if (message.trim() !== '') {
+                socket.send(message);
+                input.value = '';
+            }
+        }
+    </script>
+</body>
+</html>
